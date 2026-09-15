@@ -6,7 +6,7 @@ janela = Tk()
 janela.geometry("500x400")
 janela.config(bg="aliceblue")
 janela.title("Calculadora de resistor")
-
+janela.resizable(False, False)
 estilo = ttk.Style()
 estilo.theme_use('clam')
 CORES = {
@@ -71,13 +71,77 @@ def botao_calcular():
         "Informação",
         "Você clicou no botão!"
     )
+
+def cores_valor():
+    faixa1 = faixa1_combo.get()
+    faixa2 = faixa2_combo.get()
+    faixa3 = faixa3_combo.get()
+    faixa4 = faixa4_combo.get()
+
+    if not (faixa1 and faixa2 and faixa3 and faixa4):
+        messagebox.showerror("Erro", "Por favor, selecione todas as cores.")
+        return
+
+    digito1 = CORES[faixa1]["digito"]
+    digito2 = CORES[faixa2]["digito"]
+    multiplicador = CORES[faixa3]["multi"]
+    tolerancia = TOLERANCIA[faixa4][1]
+
+    resistencia = (digito1 * 10 + digito2) * multiplicador
+    resistencia_formatada = formatacao_valor(resistencia)
+
+    messagebox.showinfo("Resultado", f"Resistência: {resistencia_formatada}\nTolerância: {tolerancia}")
+
+def valor_cores():
+    valor_str = entry_resis.get()
+    tolerancia = toler_combo.get()
+
+    if not valor_str or not tolerancia:
+        messagebox.showerror("Erro", "Por favor, insira o valor da resistência e selecione a tolerância.")
+        return
+
+    try:
+        valor = float(valor_str)
+    except ValueError:
+        messagebox.showerror("Erro", "Por favor, insira um valor numérico válido.")
+        return
+
+    # Determinar a unidade (Ω, kΩ, MΩ) com base no valor
+    if valor >= 1_000_000:
+        unidade = "MΩ"
+        valor_em_ohms = valor * 1_000_000
+    elif valor >= 1_000:
+        unidade = "kΩ"
+        valor_em_ohms = valor * 1_000
+    else:
+        unidade = "Ω"
+        valor_em_ohms = valor
+
+    # Calcular os dígitos e multiplicador
+    if valor_em_ohms < 10:
+        digito1 = int(valor_em_ohms)
+        digito2 = 0
+        multiplicador = 1
+    else:
+        digito1 = int(str(int(valor_em_ohms))[0])
+        digito2 = int(str(int(valor_em_ohms))[1])
+        multiplicador = 10 ** (len(str(int(valor_em_ohms))) - 2)
+
+    faixa1_cor = DIGITO_PARA_COR[digito1]
+    faixa2_cor = DIGITO_PARA_COR[digito2]
+    faixa3_cor = MULTI_PARA_COR[multiplicador]
+    
+    messagebox.showinfo(
+        "Resultado",
+        f"Faixa 1: {faixa1_cor}\nFaixa 2: {faixa2_cor}\nMultiplicador: {faixa3_cor}\nTolerância: {tolerancia}"
+    )
 #  Título Principal
-label_titulo = tk.Label(janela, text="Calculadora de Resistor", anchor="n", bg="aliceblue", fg="#1a3b5c", font=("Arial", 16, "bold"))
-label_titulo.pack(anchor= "w", padx=20, pady=15)
+label_titulo = tk.Label(janela, text="Calculadora de Resistor", anchor="n", bg="aliceblue", fg="#1a3b5c", font=("Arial", 15, "bold"))
+label_titulo.pack(anchor= "w", padx=15, pady=10)
 
 #   Frame Branco fundo
-frame_principal = tk.Frame(janela, bg="white", padx=20, pady=20)
-frame_principal.pack(fill="both", expand=True, padx=20, pady=(0, 20))
+frame_principal = tk.Frame(janela, bg="white", padx=20, pady=5)
+frame_principal.pack(padx=10, pady=(0, 15))
 
 #   Texto guia?
 tk.Label(frame_principal, text="Como deseja informar o resistor?", bg="white", font=("Arial", 10,"bold")).pack(anchor="w")
@@ -97,25 +161,25 @@ frame_cor_valor = tk.Frame(frame_principal, bg="White")
 #   Faixa 1
 faixa1_txt = tk.Label(frame_cor_valor, text="Faixa 1:", bg="white")
 faixa1_txt.grid(row=0, column=0, padx=5, sticky="w")
-faixa1_combo = ttk.Combobox(frame_cor_valor, values=NOMES_DIGITO, state="readonly", width=12)
+faixa1_combo = ttk.Combobox(frame_cor_valor, values=NOMES_DIGITO, state="readonly", width=13)
 faixa1_combo.grid(row=1, column=0, padx=5, pady=5)
 
 #   Faixa 2
 faixa2_txt = tk.Label(frame_cor_valor, text="Faixa 2:", bg="white")
 faixa2_txt.grid(row=0, column=1, padx=5, sticky="w")
-faixa2_combo = ttk.Combobox(frame_cor_valor, values=NOMES_DIGITO, state="readonly", width=12)
+faixa2_combo = ttk.Combobox(frame_cor_valor, values=NOMES_DIGITO, state="readonly", width=13)
 faixa2_combo.grid(row=1, column=1, padx=5, pady=5)
 
 #   Multiplicador
 faixa3_txt = tk.Label(frame_cor_valor, text="Multiplicador:", bg="white")
 faixa3_txt.grid(row=0, column=2, padx=5, sticky="w")
-faixa3_combo = ttk.Combobox(frame_cor_valor, values=NOMES_MULTI, state="readonly", width=12)
+faixa3_combo = ttk.Combobox(frame_cor_valor, values=NOMES_MULTI, state="readonly", width=13)
 faixa3_combo.grid(row=1, column=2, padx=5, pady=5)
 
 #   Tolerância
 faixa4_txt = tk.Label(frame_cor_valor, text="Tolerância:", bg="white")
 faixa4_txt.grid(row=0, column=3, padx=5, sticky="w")
-faixa4_combo = ttk.Combobox(frame_cor_valor, values=NOMES_TOLERANCIA, state="readonly", width=12)
+faixa4_combo = ttk.Combobox(frame_cor_valor, values=NOMES_TOLERANCIA, state="readonly", width=13)
 faixa4_combo.grid(row=1, column=3, padx=5, pady=5)
 
 #       Frame Valor Resistência
@@ -140,18 +204,26 @@ botton_calcular = tk.Button(
     text="Calcular resistência", 
     bg="gray", 
     fg="White", 
-    font=("Arial", 10, "bold"),
+    font=("Arial", 9, "bold"),
     relief="groove",
     padx=10,
     pady=5,
-    command=botao_calcular
+    command=cores_valor
 )
-botton_calcular.pack(anchor="w", pady=15)
+botton_calcular.pack(anchor="w", pady=5)
 
-#   Canvas onde o resistor vai ser desenhado
-sub_canvas = tk.Label(frame_principal, text="Digite o valor da resistência ou selecione as cores.", font=("Arial", 10, "bold"), bg="White").pack(anchor="w",pady=5)
-resist_canvas = tk.Canvas(janela, width=100, height=100)
-resist_canvas.pack()
+#texto que vai ficar embaixo do botão calcular
+sub_canvas = tk.Label(frame_principal, text="Digite o valor da resistência ou selecione as cores.", font=("Arial", 9, "bold"), bg="White").pack(anchor="w",pady=5)
+
+#   Canvas onde o resistor vai ser desenhad
+canvas = Canvas(frame_principal, width=400, height=300, bg="light gray")
+
+canvas.create_rectangle(
+    40,40, 300, 150,
+    fill="#D2B48C",  # Cor do corpo do resistor (dourado)
+    outline="black",  # Cor da borda
+)
+canvas.pack()
 
 modo_cores()
 janela.mainloop()
