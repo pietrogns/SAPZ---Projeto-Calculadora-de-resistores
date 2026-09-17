@@ -51,7 +51,7 @@ def formatacao_valor(ohms):
 
 
 #função que alterna entre os modos "cores" e "valor"
-def modo_cores():
+def troca_de_opcao():
     opcao = modo_var.get()
     
     if opcao == "cores":
@@ -69,10 +69,12 @@ def modo_cores():
 
 
 def botao_calcular():
-        messagebox.showinfo(
-        "Informação",
-        "Você clicou no botão!"
-    )
+    opcao = modo_var.get()
+    
+    if opcao == "cores":
+        cores_valor() # Chama a função que calcula pelas cores
+    elif opcao == "valor":
+        valor_cores() # Chama a função que descobre as cores pelo número
 
 def cores_valor():
     faixa1 = faixa1_combo.get()
@@ -137,6 +139,8 @@ def valor_cores():
         "Resultado",
         f"Faixa 1: {faixa1_cor}\nFaixa 2: {faixa2_cor}\nMultiplicador: {faixa3_cor}\nTolerância: {tolerancia}"
     )
+
+    
 #  Título Principal
 label_titulo = tk.Label(janela, text="Calculadora de Resistor", anchor="n", bg="aliceblue", fg="#1a3b5c", font=("Arial", 15, "bold"))
 label_titulo.pack(anchor= "w", padx=15, pady=10)
@@ -145,7 +149,7 @@ label_titulo.pack(anchor= "w", padx=15, pady=10)
 frame_principal = tk.Frame(janela, bg="white", padx=20, pady=5)
 frame_principal.pack(padx=10, pady=(0, 15))
 
-#   Texto guia?
+#   Texto
 tk.Label(frame_principal, text="Como deseja informar o resistor?", bg="white", font=("Arial", 10,"bold")).pack(anchor="w")
 
 #   Opções de modos
@@ -154,8 +158,8 @@ frame_modo.pack(fill="x", pady=5)
 modo_var = tk.StringVar(value="cores") 
 
 #   Botões das opções
-cores_rdbtn = tk.Radiobutton(frame_modo, text="Cores do resistor", variable=modo_var, value="cores", bg="#e8e8e8", font=("Arial", 9),command=modo_cores).pack(side="left", padx=(0,10))
-valor_rdbtn = tk.Radiobutton(frame_modo, text="Valor da resistência", variable=modo_var, value="valor", bg="#e8e8e8", font=("Arial", 9),command=modo_cores).pack(side="left", padx=5)
+cores_rdbtn = tk.Radiobutton(frame_modo, text="Cores do resistor", variable=modo_var, value="cores", bg="#e8e8e8", font=("Arial", 9),command=troca_de_opcao).pack(side="left", padx=(0,10))
+valor_rdbtn = tk.Radiobutton(frame_modo, text="Valor da resistência", variable=modo_var, value="valor", bg="#e8e8e8", font=("Arial", 9),command=troca_de_opcao).pack(side="left", padx=5)
 
 #   Frame para seleção de cores
 frame_cor_valor = tk.Frame(frame_principal, bg="White")
@@ -213,12 +217,13 @@ botton_calcular = tk.Button(
     relief="groove",
     padx=10,
     pady=5,
-    command=cores_valor
-)
+    command=botao_calcular)
 botton_calcular.pack(anchor="w", pady=5)
 
+#label onde pede para o usuario digitar o valor
+label_valor = tk.Label(frame_principal, text="Digite o valor da resistência ou selecione as cores.", font=("Arial", 9, "bold"), bg="White").pack(anchor="w",pady=5)
+
 #   Canvas onde o resistor vai ser desenhado
-sub_canvas = tk.Label(frame_principal, text="Digite o valor da resistência ou selecione as cores.", font=("Arial", 9, "bold"), bg="White").pack(anchor="w",pady=5)
 canvas = Canvas(frame_principal, width=400, height=300, bg="light gray")
 
 base_resistor = canvas.create_rectangle(
@@ -239,23 +244,23 @@ fio_direito = canvas.create_rectangle(
 )
 
 #   Faixas
-faixa1 = canvas.create_rectangle(
-    107, 30, 125, 80, 
-    fill="cyan",
+desenho_faixa1 = canvas.create_rectangle(
+    120, 30, 135, 80, 
+    fill="#FF0000",
 )
-faixa2 = canvas.create_rectangle(
-    135, 30, 155, 80, 
-    fill="red",
+desenho_faixa2 = canvas.create_rectangle(
+    150, 30, 165, 80, 
+    fill="#FF0000",
 )
-faixa3 = canvas.create_rectangle(
-    165, 30, 185, 80,
-    fill="blue"
+desenho_faixa3 = canvas.create_rectangle(
+    180, 30, 195, 80,
+    fill="#FF0000"
 )
-faixa4 = canvas.create_rectangle(
-    235, 30, 260, 80,
-    fill="gold"
+desenho_faixa4 = canvas.create_rectangle(
+    220, 30, 238, 80,
+    fill="#FF0000"
 )
 
-modo_cores()
+troca_de_opcao()
 janela.mainloop()
 
