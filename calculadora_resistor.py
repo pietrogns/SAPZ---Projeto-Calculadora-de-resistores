@@ -13,7 +13,7 @@ estilo = ttk.Style()
 estilo.theme_use('clam')
 
 # ---------------------------------------------------------
-#Dicionarios
+#   Dicionarios
 # ---------------------------------------------------------
 
 # Listas simples com os nomes para preencher as Comboboxes
@@ -55,7 +55,7 @@ cor_hexadecimal = {
 
 
 # ---------------------------------------------------------
-# 2. FUNÇÕES COM LÓGICA PASSO A PASSO
+# FUNÇÕES
 # ---------------------------------------------------------
 
 def formatacao_valor(ohms):
@@ -72,17 +72,26 @@ def formatacao_valor(ohms):
 def troca_de_opcao():
 
     opcao = modo_var.get()
-    #comando abaixo serve para limpar o texto do resultado toda vez q trocar de opção
+    #  comando abaixo serve para limpar o texto do resultado toda vez q trocar de opção
     label_resultado.config(text="")
-    
+
+    # Serve para limpar o resistor desenhado do modo selecionado e mostra a caixa de espera
+    canvas.pack_forget()
+    frame_espera.pack(pady=5)
+
+
     if opcao == "cores":
         frame_valor_cor.pack_forget()
         frame_cor_valor.pack(after=frame_modo, pady=10)
         # Mostra o frame_cor_valor exatamente DEPOIS do frame_modo
+        
     elif opcao == "valor":
          # Esconde o frame de cores
         frame_cor_valor.pack_forget()
         frame_valor_cor.pack(after=frame_modo, pady=10)
+
+
+    
 
 
 def cores_valor():
@@ -109,9 +118,11 @@ def cores_valor():
     
     resistencia_formatada = formatacao_valor(resistencia)
 
-    texto_final = f"Resultado:{resistencia_formatada} \ Tolerância: {tolerancia}"
-    label_resultado.config(texto_final)
-    # 5. Pinta o desenho
+    texto_final = f"Resultado:{resistencia_formatada} | Tolerância: {tolerancia}"
+    label_resultado.config(text=texto_final)
+
+
+    #  Pinta o desenho
     canvas.itemconfig(desenho_faixa1, fill=cor_hexadecimal[faixa1])
     canvas.itemconfig(desenho_faixa2, fill=cor_hexadecimal[faixa2])
     canvas.itemconfig(desenho_faixa3, fill=cor_hexadecimal[faixa3])
@@ -160,10 +171,8 @@ def valor_cores():
     faixa1_cor = cor_do_digito[digito1]
     faixa2_cor = cor_do_digito[digito2]
     faixa3_cor = cor_do_multiplicador[multiplicador]
-    
-    # Mensagem final
-    texto_final = f"Cores: {faixa1_cor} - {faixa2_cor} - {faixa3_cor} \ Tolerância: {tolerancia}"
-    label_resultado.config(text=texto_final)
+
+
     # Pinta o desenho
     canvas.itemconfig(desenho_faixa1, fill=cor_hexadecimal[faixa1_cor])
     canvas.itemconfig(desenho_faixa2, fill=cor_hexadecimal[faixa2_cor])
@@ -348,7 +357,7 @@ label_resultado = tk.Label(
 )
 label_resultado.pack(anchor="w", pady=2)
 
-# --- CAIXA DE ESPERA (ADICIONADA AQUI!) ---
+# --- CAIXA DE ESPERA ---
 frame_espera = tk.Frame(frame_principal, bg="white", highlightbackground="#d3d3d3", highlightthickness=1, width=400, height=130)
 frame_espera.pack_propagate(False) 
 texto_espera = tk.Label(frame_espera, text="Aguarde a seleção do modo", bg="white", fg="gray", font=("Arial", 10))
@@ -357,7 +366,7 @@ frame_espera.pack(pady=5) # Ela começa visível na tela
 
 
 #   Canvas onde o resistor vai ser desenhado
-canvas = Canvas(frame_principal, width=400, height=150, bg="light gray")
+canvas = Canvas(frame_principal, width=400, height=150, bg="black")
 
 base_resistor = canvas.create_rectangle(
     80,30, 300, 80,
@@ -369,12 +378,13 @@ base_resistor = canvas.create_rectangle(
 fio_esquerdo = canvas.create_rectangle(20, 55, 80, 60, fill="gray")
 fio_direito = canvas.create_rectangle(300, 55, 360, 60, fill="gray")
 
-#   Faixas (Note que mudei os nomes para desenho_faixa1, etc.)
+#   Faixas
 desenho_faixa1 = canvas.create_rectangle(120, 30, 135, 80, fill="#FF0000")
 desenho_faixa2 = canvas.create_rectangle(150, 30, 165, 80, fill="#FF0000")
 desenho_faixa3 = canvas.create_rectangle(180, 30, 195, 80, fill="#FF0000")
 desenho_faixa4 = canvas.create_rectangle(220, 30, 238, 80, fill="#FF0000")
 
 # Força a janela a iniciar arrumada
+
 troca_de_opcao()
 janela.mainloop()
