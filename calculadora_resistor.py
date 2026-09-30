@@ -16,7 +16,7 @@ estilo.theme_use('clam')
 #   Dicionarios
 # ---------------------------------------------------------
 
-# Listas simples com os nomes para preencher as Comboboxes
+# Listas com os nomes para preencher as Comboboxes
 NOMES_DIGITO = ["Preto", "Marrom", "Vermelho", "Laranja", "Amarelo", "Verde", "Azul", "Violeta", "Cinza", "Branco"]
 NOMES_MULTI = ["Preto", "Marrom", "Vermelho", "Laranja", "Amarelo", "Verde", "Azul", "Violeta", "Ouro", "Prata"]
 NOMES_TOLERANCIA = ["Marrom", "Vermelho", "Ouro", "Prata"]
@@ -95,7 +95,6 @@ def troca_de_opcao():
 
 
 def cores_valor():
-    # Pega os textos das caixinhas
     faixa1 = faixa1_combo.get()
     faixa2 = faixa2_combo.get()
     faixa3 = faixa3_combo.get()
@@ -366,7 +365,7 @@ frame_espera.pack(pady=5) # Ela começa visível na tela
 
 
 #   Canvas onde o resistor vai ser desenhado
-canvas = Canvas(frame_principal, width=400, height=150, bg="black")
+canvas = Canvas(frame_principal, width=400, height=150, bg="light gray")
 
 base_resistor = canvas.create_rectangle(
     80,30, 300, 80,
