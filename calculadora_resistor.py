@@ -14,20 +14,19 @@ estilo.theme_use('clam')
 
 # ---------------------------------------------------------
 #   Dicionarios
-# ---------------------------------------------------------
 
 # Listas com os nomes para preencher as Comboboxes
 NOMES_DIGITO = ["Preto", "Marrom", "Vermelho", "Laranja", "Amarelo", "Verde", "Azul", "Violeta", "Cinza", "Branco"]
 NOMES_MULTI = ["Preto", "Marrom", "Vermelho", "Laranja", "Amarelo", "Verde", "Azul", "Violeta", "Ouro", "Prata"]
 NOMES_TOLERANCIA = ["Marrom", "Vermelho", "Ouro", "Prata"]
 
-# Dicionário 1: Para achar o número do dígito através da cor
+# Dicionário para achar o número do dígito através da cor
 valor_do_digito = {
     "Preto": 0, "Marrom": 1, "Vermelho": 2, "Laranja": 3, "Amarelo": 4, 
     "Verde": 5, "Azul": 6, "Violeta": 7, "Cinza": 8, "Branco": 9
 }
 
-# Dicionário 2: Para achar o multiplicador através da cor
+# Dicionário para achar o multiplicador através da cor
 valor_do_multiplicador = {
     "Preto": 1, "Marrom": 10, "Vermelho": 100, "Laranja": 1000, 
     "Amarelo": 10000, "Verde": 100000, "Azul": 1000000, "Violeta": 10000000, 
@@ -90,10 +89,6 @@ def troca_de_opcao():
         frame_cor_valor.pack_forget()
         frame_valor_cor.pack(after=frame_modo, pady=10)
 
-
-    
-
-
 def cores_valor():
     faixa1 = faixa1_combo.get()
     faixa2 = faixa2_combo.get()
@@ -104,7 +99,7 @@ def cores_valor():
         messagebox.showerror("Erro", "Por favor, selecione todas as cores.")
         return
 
-    # Transforma texto em número usando os dicionários simples
+    # Transforma texto em número usando os dicionários
     digito1 = valor_do_digito[faixa1]
     digito2 = valor_do_digito[faixa2]
     multiplicador = valor_do_multiplicador[faixa3]
@@ -330,7 +325,7 @@ toler_combo = ttk.Combobox(frame_valor_cor, values=NOMES_TOLERANCIA,state="reado
 toler_combo.grid(row=1, column=1, padx=5, pady=5)
 
 
-#   Botão para calcular (Note que troquei o command para botao_calcular)
+#   Botão para calcular
 botton_calcular = tk.Button(
     frame_principal,
     text="Calcular resistência", 
@@ -383,7 +378,6 @@ desenho_faixa2 = canvas.create_rectangle(150, 30, 165, 80, fill="#FF0000")
 desenho_faixa3 = canvas.create_rectangle(180, 30, 195, 80, fill="#FF0000")
 desenho_faixa4 = canvas.create_rectangle(220, 30, 238, 80, fill="#FF0000")
 
-# Força a janela a iniciar arrumada
-
 troca_de_opcao()
 janela.mainloop()
+
