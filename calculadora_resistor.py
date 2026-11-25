@@ -1,3 +1,4 @@
+import math
 import tkinter as tk
 from tkinter import ttk
 from tkinter import Tk, Canvas
@@ -128,9 +129,9 @@ def cores_valor():
 
 
 def valor_cores():
-    valor_str = entry_resis.get()
+    valor_str = entry_resis.get().replace(",", ".")
     tolerancia = toler_combo.get()
-    
+
     if not valor_str or not tolerancia:
         messagebox.showerror("Erro", "Por favor, insira o valor da resistência e selecione a tolerância.")
         return
@@ -141,33 +142,23 @@ def valor_cores():
         messagebox.showerror("Erro", "Por favor, insira um valor numérico válido.")
         return
 
-    # Transformar o número em texto para pegar as letras separadas
-    numero_inteiro = int(valor_numero)
-    texto_numero = str(numero_inteiro)
+    if valor_numero < 0.1 or valor_numero >= 995_000_000:
+        messagebox.showerror("Erro", "Use um valor entre 0,1 Ω e 990 MΩ.")
+        return
 
-    # Pegando a primeira e segunda letra (dígitos)
-    texto_d1 = texto_numero[0]
-    texto_d2 = "0"
-    if len(texto_numero) > 1:
-        texto_d2 = texto_numero[1]
+    
+    expoente = max(math.floor(math.log10(valor_numero)) - 1, -2) #sempre 2 digitos e mais o multiplicador
+    dois_digitos = round(valor_numero / 10 ** expoente)
+    if dois_digitos == 100:  #exemplo 99.6 arredonda para 100
+        dois_digitos = 10
+        expoente += 1
 
-    digito1 = int(texto_d1)
-    digito2 = int(texto_d2)
+    faixa1_cor = cor_do_digito[dois_digitos // 10]
+    faixa2_cor = cor_do_digito[dois_digitos % 10]
+    faixa3_cor = cor_do_multiplicador[10 ** expoente]
 
-    # Calculando os zeros para o multiplicador
-    if valor_numero < 10:
-        multiplicador = 1
-    else:
-        quantidade_de_zeros = len(texto_numero) - 2
-        multiplicador = 10 ** quantidade_de_zeros
+    label_resultado.config(text=f"Cores: {faixa1_cor}, {faixa2_cor}, {faixa3_cor}, {tolerancia}")
 
-    # Acha os nomes das cores usando os dicionários inversos
-    faixa1_cor = cor_do_digito[digito1]
-    faixa2_cor = cor_do_digito[digito2]
-    faixa3_cor = cor_do_multiplicador[multiplicador]
-
-
-    # Pinta o desenho
     canvas.itemconfig(desenho_faixa1, fill=cor_hexadecimal[faixa1_cor])
     canvas.itemconfig(desenho_faixa2, fill=cor_hexadecimal[faixa2_cor])
     canvas.itemconfig(desenho_faixa3, fill=cor_hexadecimal[faixa3_cor])
